@@ -15,12 +15,13 @@ jobs:
         java-package: jdk
         architecture: x64
     - name: Run tests
-      run: mvn -B clean package
+      run: mvn clean package
 
   security-scans:
     name: checkmarx-scans
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v4    
     - name: Checkmarx One CLI Action
       uses: checkmarx/ast-github-action@main #Github Action version
       with:
