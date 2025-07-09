@@ -1,8 +1,6 @@
 name: ci
 on:
-  push:
-    branches:
-      - 'master'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,7 +15,7 @@ jobs:
         java-package: jdk
         architecture: x64
     - name: Run tests
-      run: mvn -B package
+      run: mvn -B clean package
 
   security-scans:
     name: checkmarx-scans
@@ -32,4 +30,4 @@ jobs:
         cx_client_id: ${{ secrets.CX_CLIENT_ID }}
         cx_client_secret: ${{ secrets.CX_CLIENT_SECRET }}
         branch: ${{ github.ref }}
-        additional_params: '--scan-types sast,sca,container'
+        additional_params: '--scan-types sast,sca,container-security'
