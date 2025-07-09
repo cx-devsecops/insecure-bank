@@ -1,6 +1,9 @@
 name: ci
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - 'master'
+
 jobs:
   build:
     name: Maven Build
