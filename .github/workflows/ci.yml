@@ -2,15 +2,24 @@ name: ci
 on:
   workflow_dispatch:
 jobs:
-  run:
-    name: Java ${{ matrix.java }}
+  build:
+    name: Maven Build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [ 8 ]
     steps:
     - uses: actions/checkout@v4
+    - name: Set up Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: '8'
+        java-package: jdk
+        architecture: x64
+    - name: Run tests
+      run: mvn -B package
 
+  security-scans:
+    name: checkmarx-scans
+    runs-on: ubuntu-latest
+    steps:
     - name: Checkmarx One CLI Action
       uses: checkmarx/ast-github-action@main #Github Action version
       with:
@@ -20,14 +29,4 @@ jobs:
         cx_client_id: ${{ secrets.CX_CLIENT_ID }}
         cx_client_secret: ${{ secrets.CX_CLIENT_SECRET }}
         branch: ${{ github.ref }}
-        additional_params: '--scan-types sast,sca'
-
-    - name: Set up Java
-      uses: actions/setup-java@v1
-      with:
-        java-version: ${{ matrix.java }}
-        java-package: jdk
-        architecture: x64
-    - name: Run tests
-      run: mvn -B package
-
+        additional_params: '--scan-types sast,sca,container'
